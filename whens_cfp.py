@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import datetime
 import json
 import requests
+from datetime import date
 from requests.exceptions import HTTPError
 
 def get_cfps():
@@ -15,8 +17,18 @@ def get_cfps():
         print(f'Other error occurred: {err}')
     else:
         print('Success!\n')
-        cfps = json.loads(response.text)
-        print(cfps)
+        return response.json()
+        
 
 
-get_cfps()
+def parse_cfps(cfps):
+    today = date.today() # we need yyyy-mm-dd'T'hh:mm:ss
+    now = today.strftime("%Y-%m-%d" + "T" + "%H:%M%S")
+    
+    for cfp in cfps:
+        if  cfp['cfp_deadline'] > str(now):
+            print(cfp['id'])
+
+cfps = get_cfps()
+
+parse_cfps(cfps)
